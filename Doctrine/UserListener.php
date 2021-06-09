@@ -12,7 +12,7 @@
 namespace FOS\UserBundle\Doctrine;
 
 use Doctrine\Common\EventSubscriber;
-use Doctrine\Common\Persistence\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ORM\EntityManager;
@@ -83,7 +83,7 @@ class UserListener implements EventSubscriber
     /**
      * Recomputes change set for Doctrine implementations not doing it automatically after the event.
      */
-    private function recomputeChangeSet(ObjectManager $om, UserInterface $user)
+    private function recomputeChangeSet(EntityManager $om, UserInterface $user)
     {
         $meta = $om->getClassMetadata(get_class($user));
 
@@ -91,10 +91,6 @@ class UserListener implements EventSubscriber
             $om->getUnitOfWork()->recomputeSingleEntityChangeSet($meta, $user);
 
             return;
-        }
-
-        if ($om instanceof DocumentManager) {
-            $om->getUnitOfWork()->recomputeSingleDocumentChangeSet($meta, $user);
         }
     }
 }
